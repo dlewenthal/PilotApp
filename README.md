@@ -1,70 +1,125 @@
-# Getting Started with Create React App
+# Delta Pilot Seniority Lookup Application
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A React-based web application for looking up Delta Air Lines pilot seniority information, providing comprehensive views of pilot rankings across different bases, aircraft types, and positions.
 
-## Available Scripts
+## Features
 
-In the project directory, you can run:
+- **Pilot Search**: Search for pilots by name with real-time results
+- **Multiple View Modes**:
+  - **Detailed View**: Complete seniority breakdown with percentages and rankings
+  - **Widget View**: Space-optimized layout showing seniority ranges and pay scales
+  - **System Snapshot**: Historical data visualization
+- **Comprehensive Data**: 
+  - System-wide seniority rankings
+  - Base-specific seniority by aircraft type
+  - Captain and First Officer positions
+  - Current pay scale integration
+  - Equipment assignments and availability
 
-### `npm start`
+## Technology Stack
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- **Frontend**: React.js with custom CSS styling
+- **Backend**: Node.js with Express.js API server
+- **Database**: SQLite with Prisma ORM
+- **Data**: Real pilot seniority snapshots and pay scale information
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Quick Start
 
-### `npm test`
+### Prerequisites
+- Node.js (v14 or higher)
+- npm or yarn
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Installation
 
-### `npm run build`
+1. Clone the repository:
+```bash
+git clone https://github.com/dlewenthal/PilotApp.git
+cd PilotApp
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+2. Install dependencies:
+```bash
+npm install
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+3. Start the development servers:
+```bash
+npm run dev
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+This starts both the React frontend (http://localhost:3000) and the API server (http://localhost:3001).
 
-### `npm run eject`
+### Available Scripts
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+- `npm start` - Start the React development server
+- `npm run server` - Start the API server only
+- `npm run dev` - Start both frontend and backend servers concurrently
+- `npm run build` - Build the app for production
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## Application Structure
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+```
+├── src/
+│   ├── PilotSeniorityLookup.js    # Main search and display component
+│   ├── WidgetView.js              # Optimized seniority display widget
+│   ├── SystemSnapshot.js          # Historical data visualization
+│   └── *.css                      # Component-specific styling
+├── prisma/
+│   ├── schema.prisma              # Database schema
+│   └── dev.db                     # SQLite database file
+├── api.js                         # Express.js API server
+├── server.js                      # Server entry point
+└── package.json                   # Dependencies and scripts
+```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## API Endpoints
 
-## Learn More
+- `GET /api/pilots/search?name={name}` - Search pilots by name
+- `GET /api/pilots/{id}/seniority` - Get detailed seniority data for a pilot
+- `GET /api/seniority-ranges` - Get seniority range data for positions
+- `GET /api/pay-rates` - Get current pay scale information
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## Database Schema
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+The application uses a SQLite database with the following main tables:
 
-### Code Splitting
+- **Pilot**: Basic pilot information and hire dates
+- **SenioritySnapshot**: Historical seniority data by report date
+- **PayScale**: Contract-based pay scale information
+- **Aircraft**: Fleet definitions and pay categories
+- **PayRate**: Hourly rates by aircraft, position, and years of service
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+## Features in Detail
 
-### Analyzing the Bundle Size
+### Pilot Search
+- Real-time search with autocomplete suggestions
+- Search by last name or full name
+- Displays employee number and hire date in results
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+### Seniority Data Display
+- **System Seniority**: Overall company-wide ranking
+- **Base Seniority**: Rankings within each pilot base
+- **Equipment Seniority**: Rankings by aircraft type and position
+- **Pay Information**: Current hourly rates based on years of service
 
-### Making a Progressive Web App
+### Widget View Optimization
+- Compact, space-efficient layout
+- Senior/Junior seniority number ranges
+- Total pilot counts per equipment/position
+- Pay scale integration
+- Responsive design for mobile devices
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+## Data Sources
 
-### Advanced Configuration
+- Delta Air Lines seniority list data
+- Pilot contract pay scales (2025+)
+- Aircraft fleet assignments
+- Base and equipment mappings
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+## Contributing
 
-### Deployment
+This application was developed for pilot career tracking and analysis. The data structure supports historical tracking of seniority changes over time.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+## License
 
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+This project is for educational and informational purposes.
