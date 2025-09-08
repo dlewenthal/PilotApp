@@ -1,0 +1,425 @@
+.pilot-seniority-lookup {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+}
+
+.header {
+  background: linear-gradient(135deg, #c41e3a 0%, #8b1c3a 100%);
+  padding: 30px;
+  border-radius: 12px;
+  margin-bottom: 30px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="delta" patternUnits="userSpaceOnUse" width="20" height="20"><polygon points="10,2 18,16 2,16" fill="rgba(255,255,255,0.05)"/></pattern></defs><rect width="100" height="100" fill="url(%23delta)"/></svg>');
+  pointer-events: none;
+}
+
+.header h1 {
+  color: white;
+  margin: 0 0 20px 0;
+  text-align: center;
+  font-size: 2.5rem;
+  font-weight: 700;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+  position: relative;
+  z-index: 1;
+}
+
+.search-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  position: relative;
+  z-index: 1;
+}
+
+.action-buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+.view-toggle {
+  display: flex;
+  gap: 10px;
+}
+
+.view-button {
+  padding: 8px 16px;
+  border: 2px solid #007bff;
+  background-color: white;
+  color: #007bff;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.view-button:hover {
+  background-color: #f8f9fa;
+}
+
+.view-button.active {
+  background-color: #007bff;
+  color: white;
+}
+
+.search-input-group {
+  display: flex;
+  gap: 15px;
+  width: 100%;
+  max-width: 700px;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  backdrop-filter: blur(10px);
+}
+
+.search-input {
+  flex: 1;
+  padding: 16px 20px;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  font-size: 16px;
+  background: white;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #c41e3a;
+  box-shadow: 0 4px 16px rgba(196, 30, 58, 0.2);
+  transform: translateY(-1px);
+}
+
+.search-button, .reset-button {
+  padding: 16px 32px;
+  background: linear-gradient(135deg, #c41e3a 0%, #8b1c3a 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(196, 30, 58, 0.3);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.search-button:hover, .reset-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(196, 30, 58, 0.4);
+}
+
+.search-button:disabled {
+  background: #6c757d;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.reset-button {
+  background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+  box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
+}
+
+.error-message {
+  color: #dc3545;
+  background-color: #f8d7da;
+  padding: 12px;
+  border-radius: 6px;
+  margin-top: 10px;
+  text-align: center;
+}
+
+.search-results {
+  background: rgba(255, 255, 255, 0.95);
+  padding: 25px;
+  border-radius: 12px;
+  margin-bottom: 30px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+  backdrop-filter: blur(10px);
+}
+
+.search-results h3 {
+  color: #2c3e50;
+  margin-bottom: 20px;
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+
+.pilot-result {
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  padding: 20px;
+  border: 2px solid transparent;
+  border-radius: 10px;
+  margin-bottom: 15px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.pilot-result:hover {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-color: #c41e3a;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(196, 30, 58, 0.15);
+}
+
+.pilot-name {
+  font-weight: bold;
+  font-size: 16px;
+  color: #2c3e50;
+}
+
+.pilot-details {
+  color: #6c757d;
+  font-size: 14px;
+  margin-top: 5px;
+}
+
+.seniority-data {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 12px;
+  padding: 25px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+  backdrop-filter: blur(10px);
+}
+
+.pilot-info {
+  background: linear-gradient(135deg, #c41e3a 0%, #8b1c3a 100%);
+  color: white;
+  padding: 30px;
+  border-radius: 12px;
+  margin-bottom: 30px;
+  text-align: center;
+  box-shadow: 0 8px 32px rgba(196, 30, 58, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.pilot-info::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="deltaInfo" patternUnits="userSpaceOnUse" width="15" height="15"><polygon points="7.5,1 13,11 2,11" fill="rgba(255,255,255,0.03)"/></pattern></defs><rect width="100" height="100" fill="url(%23deltaInfo)"/></svg>');
+  pointer-events: none;
+}
+
+.pilot-info h2 {
+  margin: 0 0 15px 0;
+  font-size: 2rem;
+  font-weight: 700;
+  position: relative;
+  z-index: 1;
+}
+
+.pilot-info p {
+  margin: 0;
+  font-size: 16px;
+  position: relative;
+  z-index: 1;
+  opacity: 0.95;
+}
+
+.base-section {
+  margin-bottom: 35px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 12px;
+  padding: 25px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  backdrop-filter: blur(5px);
+}
+
+.base-section h3 {
+  color: #2c3e50;
+  margin: 0 0 20px 0;
+  padding-bottom: 15px;
+  border-bottom: 3px solid #c41e3a;
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+
+.seniority-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.seniority-table th {
+  background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+  color: white;
+  padding: 18px 15px;
+  text-align: left;
+  font-weight: 700;
+  font-size: 15px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.seniority-table th:first-child {
+  width: 40%;
+}
+
+.seniority-table th:nth-child(2),
+.seniority-table th:nth-child(3) {
+  width: 30%;
+}
+
+.seniority-table td {
+  padding: 15px;
+  border-bottom: 1px solid #e9ecef;
+  transition: all 0.2s ease;
+}
+
+.seniority-table tbody tr:hover {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  transform: scale(1.01);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.aircraft-name {
+  font-weight: 500;
+  color: #2c3e50;
+}
+
+.captain-cell, .fo-cell {
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+}
+
+.captain-cell {
+  color: #dc3545;
+}
+
+.fo-cell {
+  color: #007bff;
+}
+
+.loading {
+  text-align: center;
+  padding: 60px;
+  font-size: 18px;
+  color: white;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+  position: relative;
+  overflow: hidden;
+}
+
+.loading::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% { left: -100%; }
+  100% { left: 100%; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.search-results, .seniority-data {
+  animation: fadeIn 0.5s ease-out;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .pilot-seniority-lookup {
+    padding: 15px;
+  }
+  
+  .header {
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  
+  .header h1 {
+    font-size: 2rem;
+  }
+  
+  .search-input-group {
+    flex-direction: column;
+    padding: 15px;
+    gap: 12px;
+  }
+  
+  .search-input {
+    padding: 14px 16px;
+  }
+  
+  .search-button, .reset-button {
+    padding: 14px 24px;
+    font-size: 14px;
+  }
+  
+  .seniority-table {
+    font-size: 13px;
+  }
+  
+  .seniority-table th,
+  .seniority-table td {
+    padding: 12px 8px;
+  }
+  
+  .pilot-info {
+    padding: 20px;
+  }
+  
+  .pilot-info h2 {
+    font-size: 1.5rem;
+  }
+  
+  .pilot-info p {
+    font-size: 14px;
+  }
+  
+  .base-section {
+    padding: 20px;
+  }
+  
+  .view-toggle {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .view-button {
+    width: 100%;
+    justify-content: center;
+  }
+}

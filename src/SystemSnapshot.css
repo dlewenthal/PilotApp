@@ -1,0 +1,242 @@
+.system-snapshot {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  background-color: #f8f9fa;
+  min-height: 100vh;
+}
+
+.snapshot-header {
+  text-align: center;
+  margin-bottom: 30px;
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.snapshot-header h1 {
+  color: #2c3e50;
+  margin: 0 0 10px 0;
+  font-size: 2.5rem;
+  font-weight: 300;
+}
+
+.pilot-info {
+  color: #6c757d;
+  font-size: 1.1rem;
+}
+
+.snapshot-content {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.base-section {
+  background-color: white;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.base-tables-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.captain-table-container,
+.fo-table-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.table-title {
+  color: #2c3e50;
+  margin: 0 0 15px 0;
+  font-size: 1.3rem;
+  font-weight: 500;
+  text-align: center;
+  padding: 10px;
+  background-color: #f8f9fa;
+  border-radius: 6px 6px 0 0;
+}
+
+.snapshot-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  border: 1px solid #dee2e6;
+  border-radius: 0 0 6px 6px;
+  overflow: hidden;
+}
+
+.table-header {
+  background-color: #343a40;
+  color: white;
+}
+
+.table-header th {
+  padding: 12px 8px;
+  text-align: center;
+  font-weight: 600;
+  border-right: 1px solid #495057;
+}
+
+.table-header th:last-child {
+  border-right: none;
+}
+
+.table-subheader {
+  background-color: #495057;
+  color: white;
+}
+
+.table-subheader th {
+  padding: 8px;
+  text-align: center;
+  font-weight: 500;
+  font-size: 12px;
+  border-right: 1px solid #6c757d;
+}
+
+.table-subheader th:last-child {
+  border-right: none;
+}
+
+.snapshot-table tbody tr {
+  border-bottom: 1px solid #dee2e6;
+}
+
+.snapshot-table td {
+  padding: 8px;
+  text-align: center;
+  border-right: 1px solid #dee2e6;
+}
+
+.snapshot-table td:last-child {
+  border-right: none;
+}
+
+.fleet-code {
+  font-weight: 600;
+  color: #2c3e50;
+  text-align: left !important;
+  padding-left: 12px !important;
+}
+
+.number-cell {
+  font-family: 'Courier New', monospace;
+  font-size: 13px;
+}
+
+.percentage-cell {
+  font-weight: 600;
+  font-size: 13px;
+}
+
+/* Percentile color coding - matches the original site */
+.percentile-excellent {
+  background-color: #d4edda !important; /* Light green */
+}
+
+.percentile-good {
+  background-color: #fff3cd !important; /* Light yellow */
+}
+
+.percentile-fair {
+  background-color: #ffeaa7 !important; /* Light orange */
+}
+
+.percentile-poor {
+  background-color: #fdcab4 !important; /* Light coral */
+}
+
+.percentile-very-poor {
+  background-color: #f8d7da !important; /* Light red */
+}
+
+/* Hover effects */
+.snapshot-table tbody tr:hover {
+  background-color: #f1f3f4 !important;
+}
+
+/* Loading and error states */
+.loading-message,
+.error-message,
+.no-data-message {
+  text-align: center;
+  padding: 40px;
+  font-size: 18px;
+  color: #6c757d;
+  background-color: white;
+  border-radius: 8px;
+  margin: 20px;
+}
+
+.error-message {
+  color: #dc3545;
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+}
+
+/* Responsive design */
+@media (max-width: 1200px) {
+  .base-tables-container {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+  
+  .table-title {
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .system-snapshot {
+    padding: 10px;
+  }
+  
+  .snapshot-header h1 {
+    font-size: 2rem;
+  }
+  
+  .pilot-info {
+    font-size: 1rem;
+  }
+  
+  .snapshot-table {
+    font-size: 12px;
+  }
+  
+  .snapshot-table th,
+  .snapshot-table td {
+    padding: 6px 4px;
+  }
+  
+  .table-title {
+    font-size: 1.1rem;
+    padding: 8px;
+  }
+}
+
+/* Print styles */
+@media print {
+  .system-snapshot {
+    background-color: white;
+    padding: 0;
+  }
+  
+  .base-section {
+    page-break-inside: avoid;
+    box-shadow: none;
+    border: 1px solid #dee2e6;
+  }
+  
+  .snapshot-header {
+    box-shadow: none;
+    border: 1px solid #dee2e6;
+  }
+}
