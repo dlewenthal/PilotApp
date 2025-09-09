@@ -23,3 +23,19 @@ yarn-debug.log*
 yarn-error.log*
 
 /src/generated/prisma
+
+# Database files and exports
+*.db
+*.db-journal
+prisma/dev.db*
+data-export/
+
+# AWS CLI and credentials
+aws/
+awscliv2.zip
+*.pem
+
+# Migration and test scripts (keep in repo but ignore sensitive ones)
+# scripts/ - we want to keep scripts in repo
+
+# Sensitive environment files (keep .env for development)
