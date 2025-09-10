@@ -17,6 +17,15 @@ app.use(express.static(path.join(__dirname, 'build')));
 
 // API Routes
 
+// Health check endpoint for Railway
+app.get('/health', (req, res) => {
+  res.json({ 
+    status: 'healthy',
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime()
+  });
+});
+
 // Search pilots endpoint
 app.get('/api/pilots/search', (req, res) => {
   const { name } = req.query;
