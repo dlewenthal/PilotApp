@@ -25,15 +25,26 @@ function Dashboard() {
 
   async function fetchPilotData() {
     try {
+      // Debug: Log the current user data
+      console.log('Current user data:', {
+        displayName: currentUser.displayName,
+        email: currentUser.email,
+        emailVerified: currentUser.emailVerified,
+        uid: currentUser.uid
+      });
+      
       // Extract employee ID from display name (format: "FirstName LastName (12345)")
       const displayName = currentUser.displayName || '';
+      console.log('Attempting to extract employee ID from displayName:', displayName);
       const employeeIdMatch = displayName.match(/\((\d+)\)/);
       
       if (!employeeIdMatch) {
+        console.error('Employee ID regex match failed for displayName:', displayName);
         throw new Error('Employee ID not found in profile');
       }
       
       const employeeId = employeeIdMatch[1];
+      console.log('Extracted employee ID:', employeeId);
       
       // First, get basic pilot data to get the pilot ID
       const pilotResponse = await fetch(`/api/pilots/employee/${employeeId}`);
