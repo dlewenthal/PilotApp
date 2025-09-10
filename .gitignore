@@ -40,3 +40,4 @@ awscliv2.zip
 # scripts/ - we want to keep scripts in repo
 
 # Sensitive environment files (keep .env for development)
+.vercel
