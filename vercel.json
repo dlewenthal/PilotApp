@@ -9,14 +9,18 @@
       }
     }
   ],
+  "functions": {
+    "api/**/*.js": {
+      "runtime": "@vercel/node@3"
+    }
+  },
   "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "RAILWAY_API_URL/api/$1"
-    },
     {
       "src": "/(.*)",
       "dest": "/index.html"
     }
-  ]
+  ],
+  "env": {
+    "DATABASE_URL": "@database_url"
+  }
 }
