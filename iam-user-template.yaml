@@ -1,0 +1,29 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Create IAM user for CLI access'
+
+Resources:
+  PilotAppCLIUser:
+    Type: AWS::IAM::User
+    Properties:
+      UserName: pilot-app-cli-user
+      Path: /
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/PowerUserAccess
+
+  PilotAppAccessKey:
+    Type: AWS::IAM::AccessKey
+    Properties:
+      UserName: !Ref PilotAppCLIUser
+
+Outputs:
+  AccessKeyId:
+    Description: 'Access Key ID for the new IAM user'
+    Value: !Ref PilotAppAccessKey
+    Export:
+      Name: !Sub '${AWS::StackName}-AccessKeyId'
+  
+  SecretAccessKey:
+    Description: 'Secret Access Key for the new IAM user'
+    Value: !GetAtt PilotAppAccessKey.SecretAccessKey
+    Export:
+      Name: !Sub '${AWS::StackName}-SecretAccessKey'

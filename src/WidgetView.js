@@ -53,44 +53,56 @@ const WidgetView = ({ seniorityData }) => {
     console.log('Fetching seniority ranges for bases:', bases);
     const rangesMap = new Map();
     
+    // Build batch request
+    const requests = [];
     for (const base of bases) {
       for (const aircraft of base.aircraft) {
-        const captainUrl = `/api/seniority-ranges?base=${encodeURIComponent(base.baseCity)}&fleet=${encodeURIComponent(aircraft.fleetCode)}&position=Captain`;
-        console.log('Fetching captain data from:', captainUrl);
+        // Add captain request
+        requests.push({
+          key: `${base.baseCity}-${aircraft.fleetCode}-Captain`,
+          base: base.baseCity,
+          fleet: aircraft.fleetCode,
+          position: 'Captain'
+        });
         
-        // Fetch captain ranges
-        try {
-          const captainResponse = await fetch(captainUrl);
-          console.log('Captain response status:', captainResponse.status);
-          if (captainResponse.ok) {
-            const captainRanges = await captainResponse.json();
-            console.log(`Captain ranges for ${base.baseCity}-${aircraft.fleetCode}:`, captainRanges);
-            rangesMap.set(`${base.baseCity}-${aircraft.fleetCode}-Captain`, captainRanges);
-          } else {
-            console.error('Captain response not ok:', await captainResponse.text());
-          }
-        } catch (error) {
-          console.error('Error fetching captain ranges:', error);
-        }
-
-        const foUrl = `/api/seniority-ranges?base=${encodeURIComponent(base.baseCity)}&fleet=${encodeURIComponent(aircraft.fleetCode)}&position=First Officer`;
-        console.log('Fetching FO data from:', foUrl);
-        
-        // Fetch first officer ranges
-        try {
-          const foResponse = await fetch(foUrl);
-          console.log('FO response status:', foResponse.status);
-          if (foResponse.ok) {
-            const foRanges = await foResponse.json();
-            console.log(`FO ranges for ${base.baseCity}-${aircraft.fleetCode}:`, foRanges);
-            rangesMap.set(`${base.baseCity}-${aircraft.fleetCode}-First Officer`, foRanges);
-          } else {
-            console.error('FO response not ok:', await foResponse.text());
-          }
-        } catch (error) {
-          console.error('Error fetching FO ranges:', error);
-        }
+        // Add first officer request
+        requests.push({
+          key: `${base.baseCity}-${aircraft.fleetCode}-First Officer`,
+          base: base.baseCity,
+          fleet: aircraft.fleetCode,
+          position: 'First Officer'
+        });
       }
+    }
+    
+    console.log('Batch request with', requests.length, 'items');
+    
+    try {
+      const response = await fetch('/api/seniority-ranges/batch', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ requests })
+      });
+      
+      if (response.ok) {
+        const results = await response.json();
+        console.log('Batch results:', results);
+        
+        // Convert results to Map
+        Object.entries(results).forEach(([key, ranges]) => {
+          if (!ranges.error) {
+            rangesMap.set(key, ranges);
+          } else {
+            console.error(`Error for ${key}:`, ranges.error);
+          }
+        });
+      } else {
+        console.error('Batch request failed:', await response.text());
+      }
+    } catch (error) {
+      console.error('Error in batch fetch:', error);
     }
     
     console.log('Final rangesMap:', rangesMap);

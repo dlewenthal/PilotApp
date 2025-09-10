@@ -7,6 +7,35 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id                    Int       @id @default(autoincrement())
+  firebaseUid           String    @unique // Firebase user ID
+  email                 String    @unique
+  emailVerified         Boolean   @default(false)
+  displayName           String?
+  employeeId            String    @unique // Links to Pilot.empNumber
+  
+  // Profile information
+  firstName             String?
+  lastName              String?
+  registrationDate      DateTime  @default(now())
+  lastLoginDate         DateTime?
+  
+  // Account status
+  isActive              Boolean   @default(true)
+  accountType           String    @default("pilot") // "pilot", "admin"
+  
+  // Relationships
+  pilot                 Pilot?    @relation(fields: [employeeId], references: [empNumber])
+  
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+  
+  @@index([firebaseUid])
+  @@index([employeeId])
+  @@index([email])
+}
+
 model Pilot {
   id                    Int       @id @default(autoincrement())
   empNumber             String    @unique
@@ -20,6 +49,7 @@ model Pilot {
   
   // Career tracking relationships
   senioritySnapshots    SenioritySnapshot[]
+  user                  User?     // Optional user account link
 }
 
 model SenioritySnapshot {
