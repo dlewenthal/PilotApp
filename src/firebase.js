@@ -1,14 +1,14 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 
-// Firebase configuration
+// Firebase configuration from environment variables
 const firebaseConfig = {
-  apiKey: "AIzaSyAqFI10fCSm6EZIpS8QmlS1G1Li6l_v7Zs",
-  authDomain: "pilot-app-54419.firebaseapp.com",
-  projectId: "pilot-app-54419",
-  storageBucket: "pilot-app-54419.firebasestorage.app",
-  messagingSenderId: "240215933761",
-  appId: "1:240215933761:web:40cacd25dd3cf20ef9d7c0"
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.REACT_APP_FIREBASE_APP_ID
 };
 
 // Initialize Firebase
