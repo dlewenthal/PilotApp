@@ -27,5 +27,8 @@
       "dest": "/index.html"
     }
   ],
-  "installCommand": "npm install --legacy-peer-deps"
+  "installCommand": "npm install --legacy-peer-deps",
+  "env": {
+    "DATABASE_URL": "postgresql://pilotadmin:PilotSeniority2025!@pilot-seniority-db.cf6esk4ycgky.us-west-1.rds.amazonaws.com:5432/pilot_seniority?schema=public"
+  }
 }
