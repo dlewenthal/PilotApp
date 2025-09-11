@@ -2,6 +2,7 @@
   "name": "my-react-app",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "dependencies": {
     "@prisma/client": "^6.14.0",
     "@testing-library/dom": "^10.4.1",
