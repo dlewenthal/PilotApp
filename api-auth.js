@@ -1,4 +1,4 @@
-const { PrismaClient } = require('@prisma/client');
+import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient({
   datasources: {
@@ -29,9 +29,9 @@ const FLEET_CODE_MAPPING = {
 };
 
 // Get pay rate for specific aircraft and position
-const getPayRate = (fleetCode, position, yearsOfService) => {
+const getPayRate = async (fleetCode, position, yearsOfService) => {
   try {
-    const payScaleData = require('./extractPayData.js');
+    const { default: payScaleData } = await import('./extractPayData.js');
     const aircraftCode = FLEET_CODE_MAPPING[fleetCode];
     
     if (!aircraftCode) {
@@ -339,8 +339,8 @@ const getPilotSeniorityById = async (pilotId) => {
         const yearsOfService = calculateYearsOfService(pilot.pilotHireDate);
         
         // Get pay rates for this aircraft
-        const captainPayRate = getPayRate(plane.fleetCode, 'Captain', yearsOfService);
-        const foPayRate = getPayRate(plane.fleetCode, 'First Officer', yearsOfService);
+        const captainPayRate = await getPayRate(plane.fleetCode, 'Captain', yearsOfService);
+        const foPayRate = await getPayRate(plane.fleetCode, 'First Officer', yearsOfService);
         
         const aircraftData = {
           fleetCode: plane.fleetCode,
@@ -433,7 +433,7 @@ const getSeniorityRangesPostgreSQL = async (baseCity, fleetCode, position) => {
   }
 };
 
-module.exports = {
+export {
   getPilotByEmployeeId,
   createUserAccount,
   getUserByFirebaseUid,

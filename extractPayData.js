@@ -1,4 +1,4 @@
-const fs = require('fs');
+import fs from 'fs';
 
 // Pay scale data extracted from 2025+ PDF
 const payScaleData = {
@@ -74,4 +74,4 @@ console.log('Aircraft count:', payScaleData.aircraft.length);
 console.log('Captain rates for B-777:', payScaleData.payRates.Captain['B-777']);
 console.log('First Officer rates for B-777:', payScaleData.payRates['First Officer']['B-777']);
 
-module.exports = payScaleData;
+export default payScaleData;
