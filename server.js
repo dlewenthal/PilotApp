@@ -1,11 +1,7 @@
-import express from 'express';
-import cors from 'cors';
-import path from 'path';
-import { getPilotByEmployeeId, createUserAccount, getUserByFirebaseUid, updateUserLastLogin, verifyUserEmail, getPilotSeniorityAuth, getPilotSeniorityById, getSeniorityRangesPostgreSQL } from './api-auth.js';
-import { fileURLToPath } from 'url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const express = require('express');
+const cors = require('cors');
+const path = require('path');
+const { getPilotByEmployeeId, createUserAccount, getUserByFirebaseUid, updateUserLastLogin, verifyUserEmail, getPilotSeniorityAuth, getPilotSeniorityById, getSeniorityRangesPostgreSQL } = require('./api-auth');
 
 const app = express();
 const port = process.env.PORT || 3001;
@@ -196,7 +192,7 @@ app.get('/api/health', (req, res) => {
 });
 
 // Serve React app for root route
-app.get('/', (req, res) => {
+app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
 

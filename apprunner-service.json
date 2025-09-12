@@ -1,0 +1,21 @@
+{
+  "ServiceName": "pilot-seniority-app",
+  "SourceConfiguration": {
+    "CodeRepository": {
+      "RepositoryUrl": "https://github.com/dlewenthal/PilotApp",
+      "SourceCodeVersion": {
+        "Type": "BRANCH",
+        "Value": "master"
+      },
+      "CodeConfiguration": {
+        "ConfigurationSource": "REPOSITORY"
+      },
+      "SourceDirectory": "/"
+    },
+    "AutoDeploymentsEnabled": true
+  },
+  "InstanceConfiguration": {
+    "Cpu": "0.25 vCPU",
+    "Memory": "0.5 GB"
+  }
+}

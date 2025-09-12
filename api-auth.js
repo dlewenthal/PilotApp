@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+const { PrismaClient } = require('@prisma/client');
 
 const prisma = new PrismaClient({
   datasources: {
@@ -433,7 +433,7 @@ const getSeniorityRangesPostgreSQL = async (baseCity, fleetCode, position) => {
   }
 };
 
-export {
+module.exports = {
   getPilotByEmployeeId,
   createUserAccount,
   getUserByFirebaseUid,
