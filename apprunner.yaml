@@ -4,11 +4,9 @@ build:
   commands:
     build:
       - echo "Installing dependencies..."
-      - npm ci --only=production
+      - npm ci
       - echo "Generating Prisma client..."
       - npx prisma generate
-      - echo "Building React app..."
-      - npm run build
       - echo "Build completed successfully"
 run:
   runtime-version: '18'
