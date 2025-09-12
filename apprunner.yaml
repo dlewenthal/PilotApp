@@ -21,3 +21,17 @@ run:
       value: "3001"
     - name: NODE_ENV
       value: "production"
+    - name: DATABASE_URL
+      value: "postgresql://pilotadmin:PilotSeniority2025!@pilot-seniority-db.cf6esk4ycgky.us-west-1.rds.amazonaws.com:5432/pilot_seniority?schema=public&sslmode=require"
+    - name: REACT_APP_FIREBASE_API_KEY
+      value: "AIzaSyAqFI10fCSm6EZIpS8QmlS1G1Li6l_v7Zs"
+    - name: REACT_APP_FIREBASE_AUTH_DOMAIN
+      value: "pilot-app-54419.firebaseapp.com"
+    - name: REACT_APP_FIREBASE_PROJECT_ID
+      value: "pilot-app-54419"
+    - name: REACT_APP_FIREBASE_STORAGE_BUCKET
+      value: "pilot-app-54419.firebasestorage.app"
+    - name: REACT_APP_FIREBASE_MESSAGING_SENDER_ID
+      value: "240215933761"
+    - name: REACT_APP_FIREBASE_APP_ID
+      value: "1:240215933761:web:40cacd25dd3cf20ef9d7c0"
