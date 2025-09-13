@@ -45,11 +45,64 @@ function Register() {
       setLoading(true);
       
       const displayName = `${formData.firstName} ${formData.lastName}`;
-      await signup(formData.email, formData.password, displayName, formData.employeeId);
+      const userCredential = await signup(formData.email, formData.password, displayName, formData.employeeId);
       
-      setMessage('Account created successfully! Please check your email to verify your account before logging in.');
+      // Get the Firebase user to create database record
+      const firebaseUser = userCredential.user;
       
-      // Redirect to login after successful registration
+      // Test connection first
+      console.log('Testing backend connection...');
+      const testResponse = await fetch('/api/debug/test-connection', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          test: 'connection test',
+          timestamp: new Date().toISOString()
+        })
+      });
+      
+      const testResult = await testResponse.json();
+      console.log('Backend connection test:', testResult);
+      
+      // Create user record in our database
+      console.log('Calling backend registration...', {
+        firebaseUid: firebaseUser.uid,
+        email: formData.email,
+        employeeId: formData.employeeId,
+        firstName: formData.firstName,
+        lastName: formData.lastName
+      });
+      
+      const response = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          firebaseUid: firebaseUser.uid,
+          email: formData.email,
+          employeeId: formData.employeeId,
+          firstName: formData.firstName,
+          lastName: formData.lastName
+        })
+      });
+      
+      console.log('Registration response status:', response.status);
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('Registration failed:', errorData);
+        throw new Error(errorData.error || 'Failed to create user profile');
+      }
+      
+      const registrationResult = await response.json();
+      console.log('Registration successful:', registrationResult);
+      
+      setMessage('Account created successfully! Please check your email to verify your account. Redirecting to login page...');
+      
+      // Redirect to login after showing success message
       setTimeout(() => {
         navigate('/login');
       }, 3000);

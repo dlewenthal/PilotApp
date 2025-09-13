@@ -28,6 +28,9 @@ export function AuthProvider({ children }) {
         }).then(() => {
           // Send email verification
           return sendEmailVerification(userCredential.user);
+        }).then(() => {
+          // Return the userCredential so it can be used in Register component
+          return userCredential;
         });
       });
   }

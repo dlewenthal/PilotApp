@@ -25,32 +25,23 @@ function Dashboard() {
 
   async function fetchPilotData() {
     try {
-      // Extract employee ID from display name (format: "FirstName LastName (12345)")
-      const displayName = currentUser.displayName || '';
-      const employeeIdMatch = displayName.match(/\((\d+)\)/);
+      // Get Firebase ID token for authentication
+      const token = await currentUser.getIdToken();
       
-      if (!employeeIdMatch) {
-        throw new Error('Employee ID not found in profile');
-      }
+      // Get user's seniority data using the authenticated endpoint
+      const seniorityResponse = await fetch('/api/user/seniority', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
       
-      const employeeId = employeeIdMatch[1];
-      
-      // First, get basic pilot data to get the pilot ID
-      const pilotResponse = await fetch(`/api/pilots/employee/${employeeId}`);
-      if (!pilotResponse.ok) {
-        throw new Error('Pilot not found');
-      }
-      
-      const pilot = await pilotResponse.json();
-      setPilotData(pilot);
-      
-      // Then get full seniority data using the pilot ID
-      const seniorityResponse = await fetch(`/api/pilots/${pilot.id}/seniority`);
       if (!seniorityResponse.ok) {
         throw new Error('Failed to get seniority data');
       }
       
       const seniority = await seniorityResponse.json();
+      setPilotData(seniority.pilot);
       setSeniorityData(seniority);
       setLoading(false);
     } catch (err) {
@@ -101,8 +92,10 @@ function Dashboard() {
             <h2>{seniorityData.pilot.name}</h2>
             <div className="pilot-details">
               <span>Employee #{seniorityData.pilot.empNumber}</span>
-              <span>Hire Date: {new Date(seniorityData.pilot.pilotHireDate).toLocaleDateString()}</span>
-              <span>System Seniority: #{seniorityData.systemSeniority?.toLocaleString() || 'N/A'}</span>
+              <span>Total Snapshots: {seniorityData.count || 0}</span>
+              {seniorityData.senioritySnapshots && seniorityData.senioritySnapshots.length > 0 && (
+                <span>Latest Seniority: #{seniorityData.senioritySnapshots[0].seniorityNumber?.toLocaleString() || 'N/A'}</span>
+              )}
             </div>
           </div>
 
@@ -132,47 +125,35 @@ function Dashboard() {
           <div className="results-container">
             {currentView === 'detailed' && (
               <div className="detailed-results">
-                {seniorityData.bases && seniorityData.bases.map((base, baseIndex) => (
-                  <div key={baseIndex} className="base-section">
-                    <h3>{base.baseCity} ({base.totalPilots?.toLocaleString() || 0} pilots)</h3>
-                    
-                    {base.aircraft && base.aircraft.map((aircraft, aircraftIndex) => (
-                      <div key={aircraftIndex} className="aircraft-section">
-                        <h4>{aircraft.fleetName} ({aircraft.fleetCode})</h4>
-                        
-                        <div className="position-grid">
-                          <div className="position-card captain">
-                            <h5>Captain</h5>
-                            <div className="seniority-info">
-                              <span className="rank">#{aircraft.captainRank?.toLocaleString() || 'N/A'}</span>
-                              <span className="total">of {aircraft.captainTotal?.toLocaleString() || 0}</span>
-                              <span className={`status ${aircraft.captainAvailable ? 'available' : 'unavailable'}`}>
-                                {aircraft.captainAvailable ? 'Eligible' : 'Not Eligible'}
-                              </span>
-                              {aircraft.captainPay && (
-                                <span className="pay">${aircraft.captainPay}/hr</span>
-                              )}
-                            </div>
+                {seniorityData.senioritySnapshots && seniorityData.senioritySnapshots.length > 0 ? (
+                  <div className="seniority-history">
+                    <h3>Recent Seniority Snapshots</h3>
+                    <div className="snapshots-grid">
+                      {seniorityData.senioritySnapshots.map((snapshot, index) => (
+                        <div key={index} className="snapshot-card">
+                          <div className="snapshot-header">
+                            <span className="report-date">
+                              {new Date(snapshot.reportDate).toLocaleDateString()}
+                            </span>
+                            <span className="seniority-number">
+                              #{snapshot.seniorityNumber?.toLocaleString() || 'N/A'}
+                            </span>
                           </div>
-                          
-                          <div className="position-card first-officer">
-                            <h5>First Officer</h5>
-                            <div className="seniority-info">
-                              <span className="rank">#{aircraft.foRank?.toLocaleString() || 'N/A'}</span>
-                              <span className="total">of {aircraft.foTotal?.toLocaleString() || 0}</span>
-                              <span className={`status ${aircraft.foAvailable ? 'available' : 'unavailable'}`}>
-                                {aircraft.foAvailable ? 'Eligible' : 'Not Eligible'}
-                              </span>
-                              {aircraft.foPay && (
-                                <span className="pay">${aircraft.foPay}/hr</span>
-                              )}
-                            </div>
+                          <div className="snapshot-details">
+                            <span className="base">{snapshot.baseCity || 'N/A'}</span>
+                            <span className="fleet">{snapshot.fleetCode || 'N/A'}</span>
+                            <span className="position">{snapshot.positionCode || 'N/A'}</span>
+                            <span className="category">{snapshot.category || 'N/A'}</span>
                           </div>
                         </div>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
-                ))}
+                ) : (
+                  <div className="no-data">
+                    <p>No seniority data found for this pilot.</p>
+                  </div>
+                )}
               </div>
             )}
 

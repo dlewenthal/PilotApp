@@ -37,6 +37,101 @@
   gap: 18px;
 }
 
+.snapshots-widget {
+  background-color: rgba(255, 255, 255, 0.25);
+  border-radius: 8px;
+  padding: 20px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.snapshots-widget h3 {
+  margin: 0 0 15px 0;
+  text-align: center;
+  font-size: 18px;
+  color: #000;
+}
+
+.snapshots-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 15px;
+}
+
+.snapshot-widget-card {
+  background-color: rgba(255, 255, 255, 0.4);
+  border-radius: 6px;
+  padding: 15px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.snapshot-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.seniority-number {
+  font-size: 18px;
+  font-weight: bold;
+  color: #000;
+}
+
+.report-date {
+  font-size: 12px;
+  color: #666;
+  font-weight: 500;
+}
+
+.snapshot-details {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.detail-row .label {
+  font-size: 12px;
+  color: #555;
+  font-weight: 500;
+  min-width: 60px;
+}
+
+.detail-row .value {
+  font-size: 12px;
+  color: #000;
+  font-weight: 600;
+  text-align: right;
+}
+
+.no-snapshots {
+  background-color: rgba(255, 255, 255, 0.25);
+  border-radius: 8px;
+  padding: 40px 20px;
+  text-align: center;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+.no-snapshots h3 {
+  margin: 0 0 10px 0;
+  color: #666;
+}
+
+.no-snapshots p {
+  margin: 0;
+  color: #888;
+  font-size: 14px;
+}
+
 .base-widget {
   background-color: rgba(255, 255, 255, 0.25);
   border-radius: 8px;

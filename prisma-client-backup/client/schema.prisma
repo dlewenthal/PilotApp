@@ -1,0 +1,244 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            Int     @id @default(autoincrement())
+  firebaseUid   String  @unique // Firebase user ID
+  email         String  @unique
+  emailVerified Boolean @default(false)
+  displayName   String?
+  employeeId    String  @unique // Links to Pilot.empNumber
+
+  // Profile information
+  firstName        String?
+  lastName         String?
+  registrationDate DateTime  @default(now())
+  lastLoginDate    DateTime?
+
+  // Account status
+  isActive    Boolean @default(true)
+  accountType String  @default("pilot") // "pilot", "admin"
+
+  // Relationships
+  pilot Pilot? @relation(fields: [employeeId], references: [empNumber])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([firebaseUid])
+  @@index([employeeId])
+  @@index([email])
+}
+
+model Pilot {
+  id                  Int       @id @default(autoincrement())
+  empNumber           String    @unique
+  name                String
+  pilotHireDate       DateTime?
+  scheduledRetireDate DateTime?
+  isRetired           Boolean   @default(false)
+  lastSeenDate        DateTime?
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+
+  // Career tracking relationships
+  senioritySnapshots SenioritySnapshot[]
+  user               User? // Optional user account link
+}
+
+model SenioritySnapshot {
+  id              Int      @id @default(autoincrement())
+  seniorityNumber Int
+  category        String
+  reportDate      DateTime
+
+  // Parsed category components
+  baseCode     String
+  fleetCode    String
+  positionCode String
+  baseCity     String
+  fleetName    String
+  positionName String
+
+  // Special handling flags
+  isPlaceholder Boolean @default(false)
+
+  // Relationships
+  pilotId Int
+  pilot   Pilot @relation(fields: [pilotId], references: [id])
+
+  createdAt DateTime @default(now())
+
+  @@unique([pilotId, reportDate])
+  @@index([reportDate])
+  @@index([baseCode, fleetCode, positionCode])
+  @@index([reportDate, baseCode, fleetCode, positionCode])
+}
+
+model DataImport {
+  id          Int      @id @default(autoincrement())
+  filename    String
+  fileType    String
+  reportDate  DateTime
+  recordCount Int
+  importedAt  DateTime @default(now())
+}
+
+model PayScale {
+  id              Int       @id @default(autoincrement())
+  effectiveDate   DateTime // When this pay scale becomes effective
+  expirationDate  DateTime? // When this pay scale expires (null for current)
+  contractVersion String // e.g., "2025+", "2023-2025", etc.
+  isActive        Boolean   @default(true)
+  createdAt       DateTime  @default(now())
+
+  // Relationships
+  payRates   PayRate[]
+  contract   Contract? @relation(fields: [contractId], references: [id])
+  contractId Int? // Link to contract table
+
+  @@index([effectiveDate])
+  @@index([isActive, effectiveDate])
+  @@index([contractId])
+}
+
+model Aircraft {
+  id           Int      @id @default(autoincrement())
+  aircraftCode String   @unique // B-777, A-350, etc.
+  aircraftName String // Boeing 777, Airbus A350, etc.
+  aircraftType String // narrow-body, wide-body, regional
+  payCategory  String // Used for pay scale grouping
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+
+  // Relationships
+  payRates PayRate[]
+
+  @@index([aircraftCode])
+  @@index([payCategory])
+}
+
+model PayRate {
+  id         Int      @id @default(autoincrement())
+  aircraftId Int
+  aircraft   Aircraft @relation(fields: [aircraftId], references: [id])
+  payScaleId Int
+  payScale   PayScale @relation(fields: [payScaleId], references: [id])
+
+  position      String // Captain, First Officer
+  yearOfService Int // 1-12 years
+  hourlyRate    Float // Pay per flight hour
+
+  createdAt DateTime @default(now())
+
+  @@unique([aircraftId, payScaleId, position, yearOfService])
+  @@index([aircraftId, position])
+  @@index([payScaleId])
+}
+
+// Contract tracking and version management
+model Contract {
+  id            Int    @id @default(autoincrement())
+  contractId    String // "PWA", "TA" - consistent across versions
+  version       String // "2023-2025", "2025-2027", "TA-2024-01"
+  versionNumber Int // Sequential: 1, 2, 3...
+  contractType  String // "PWA", "TA", "LOA", "Amendment"
+
+  // Dates
+  effectiveDate    DateTime
+  expirationDate   DateTime?
+  ratificationDate DateTime?
+
+  // Version relationships - track contract evolution
+  previousVersionId Int?
+  previousVersion   Contract?  @relation("ContractVersions", fields: [previousVersionId], references: [id])
+  nextVersions      Contract[] @relation("ContractVersions")
+
+  // Metadata
+  title       String
+  description String?
+  pdfFilePath String? // Path to source PDF
+  isActive    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relationships
+  payScales     PayScale[]
+  contractItems ContractItem[]
+  changeLog     ContractChange[]
+
+  @@unique([contractId, version])
+  @@index([contractId, versionNumber])
+  @@index([effectiveDate])
+  @@index([isActive])
+}
+
+model ContractItem {
+  id         Int      @id @default(autoincrement())
+  contractId Int
+  contract   Contract @relation(fields: [contractId], references: [id])
+
+  // Item identification - consistent across contract versions
+  itemId        String // "section_4_pay_rates", "appendix_a_vacation"
+  sectionNumber String // "Section 4", "Appendix B", "LOA 2024-01"
+  title         String // "Hourly Pay Rates", "Vacation Accrual"
+  category      String // "compensation", "scheduling", "benefits", "work_rules"
+  subcategory   String? // "hourly_pay", "overtime", "vacation_days", "duty_time"
+
+  // Content storage
+  content        String // Full text content from PDF
+  structuredData String? // JSON string of parsed/extracted data
+  summary        String? // Key points summary
+
+  // Change tracking flags
+  isNew      Boolean @default(false)
+  isModified Boolean @default(false)
+  isDeleted  Boolean @default(false)
+
+  // Metadata
+  pageNumber Int? // Page in source PDF
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@unique([contractId, itemId])
+  @@index([itemId]) // For cross-version queries
+  @@index([category, subcategory])
+  @@index([contractId, category])
+}
+
+model ContractChange {
+  id         Int      @id @default(autoincrement())
+  contractId Int
+  contract   Contract @relation(fields: [contractId], references: [id])
+
+  // What changed
+  changeType  String // "added", "modified", "deleted", "moved"
+  itemId      String // Links to ContractItem.itemId
+  category    String // Same as ContractItem.category
+  subcategory String? // Same as ContractItem.subcategory
+
+  // Change details
+  changeDescription String // Human-readable description
+  oldValue          String? // Previous value (JSON string)
+  newValue          String? // New value (JSON string)
+
+  // Impact analysis
+  impact       String? // "salary_increase", "benefit_reduction", "rule_change"
+  impactAmount Float? // Quantified impact (dollar amount, percentage, etc.)
+  impactUnit   String? // "dollars", "percentage", "hours", "days"
+
+  // Analysis metadata
+  analysisNotes String? // Additional context
+  createdAt     DateTime @default(now())
+
+  @@index([itemId])
+  @@index([category, subcategory])
+  @@index([changeType])
+  @@index([contractId, category])
+}

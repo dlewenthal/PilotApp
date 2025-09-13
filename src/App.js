@@ -7,6 +7,7 @@ import PilotSeniorityLookup from './PilotSeniorityLookup';
 import Login from './components/Login';
 import Register from './components/Register';
 import Dashboard from './components/Dashboard';
+import UserInfo from './components/UserInfo';
 
 // Protected Route Component
 function ProtectedRoute({ children }) {
@@ -14,10 +15,10 @@ function ProtectedRoute({ children }) {
   return currentUser ? children : <Navigate to="/login" />;
 }
 
-// Public Route Component (redirects to dashboard if logged in)
+// Public Route Component (redirects to dashboard only if logged in AND verified)
 function PublicRoute({ children }) {
   const { currentUser } = useAuth();
-  return !currentUser ? children : <Navigate to="/dashboard" />;
+  return (!currentUser || !currentUser.emailVerified) ? children : <Navigate to="/dashboard" />;
 }
 
 function App() {
@@ -42,6 +43,11 @@ function App() {
             <Route path="/dashboard" element={
               <ProtectedRoute>
                 <Dashboard />
+              </ProtectedRoute>
+            } />
+            <Route path="/user-info" element={
+              <ProtectedRoute>
+                <UserInfo />
               </ProtectedRoute>
             } />
             
