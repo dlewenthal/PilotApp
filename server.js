@@ -186,6 +186,23 @@ app.get('/api/auth/pilot/:employeeId/seniority', async (req, res) => {
   }
 });
 
+// Get authenticated user's seniority data (simplified for testing)
+app.get('/api/user/seniority', async (req, res) => {
+  try {
+    // For testing purposes, return test data for a sample pilot
+    const { getPilotSeniorityById } = require('./api-auth');
+    
+    // Use a test pilot ID - this should be updated to use actual authentication later
+    const testPilotId = 1; 
+    const seniorityData = await getPilotSeniorityById(testPilotId);
+    
+    res.json(seniorityData);
+  } catch (error) {
+    console.error('Error fetching user seniority:', error);
+    res.status(500).json({ error: 'Failed to fetch seniority data' });
+  }
+});
+
 // Health check endpoint
 app.get('/api/health', (req, res) => {
   res.json({ status: 'OK', timestamp: new Date().toISOString() });
