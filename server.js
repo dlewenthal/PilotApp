@@ -186,17 +186,47 @@ app.get('/api/auth/pilot/:employeeId/seniority', async (req, res) => {
   }
 });
 
-// Get authenticated user's seniority data (simplified for testing)
+// Get authenticated user's seniority data
 app.get('/api/user/seniority', async (req, res) => {
   try {
-    // For testing purposes, return test data for a sample pilot
-    const { getPilotSeniorityById } = require('./api-auth');
+    const authHeader = req.headers.authorization;
     
-    // Use a test pilot ID - this should be updated to use actual authentication later
-    const testPilotId = 1; 
-    const seniorityData = await getPilotSeniorityById(testPilotId);
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return res.status(401).json({ error: 'Authorization token required' });
+    }
     
-    res.json(seniorityData);
+    const token = authHeader.split('Bearer ')[1];
+    
+    // For local testing, we'll verify the token exists but skip Firebase admin verification
+    // In production, you would verify the token with Firebase Admin SDK
+    if (!token) {
+      return res.status(401).json({ error: 'Invalid token' });
+    }
+    
+    // Get user data by Firebase UID
+    const { getUserByFirebaseUid, getPilotSeniorityAuth } = require('./api-auth');
+    
+    // For testing, we'll decode the token to get the UID
+    // In production, you would use Firebase Admin SDK to verify and decode
+    try {
+      // For local testing, we'll need to decode the Firebase token to get the UID
+      // In production, you would use Firebase Admin SDK to verify and decode the token
+      // For now, we'll return an error since no user exists until they register
+      
+      return res.status(401).json({ 
+        error: 'User authentication required', 
+        message: 'Please register your account first' 
+      });
+      
+      // Get seniority data using the user's employee ID
+      const seniorityData = await getPilotSeniorityAuth(user.employeeId);
+      
+      res.json(seniorityData);
+    } catch (authError) {
+      console.error('Authentication error:', authError);
+      return res.status(401).json({ error: 'Invalid authentication token' });
+    }
+    
   } catch (error) {
     console.error('Error fetching user seniority:', error);
     res.status(500).json({ error: 'Failed to fetch seniority data' });
