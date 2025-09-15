@@ -197,26 +197,35 @@ app.get('/api/user/seniority', async (req, res) => {
     
     const token = authHeader.split('Bearer ')[1];
     
-    // For local testing, we'll verify the token exists but skip Firebase admin verification
-    // In production, you would verify the token with Firebase Admin SDK
     if (!token) {
       return res.status(401).json({ error: 'Invalid token' });
     }
     
-    // Get user data by Firebase UID
-    const { getUserByFirebaseUid, getPilotSeniorityAuth } = require('./api-auth');
-    
-    // For testing, we'll decode the token to get the UID
-    // In production, you would use Firebase Admin SDK to verify and decode
+    // For now, we'll use a simplified approach - decode the Firebase token to get user info
+    // In production, you would verify the token with Firebase Admin SDK
     try {
-      // For local testing, we'll need to decode the Firebase token to get the UID
-      // In production, you would use Firebase Admin SDK to verify and decode the token
-      // For now, we'll return an error since no user exists until they register
+      // Try to decode the Firebase token (it's a JWT)
+      const base64Url = token.split('.')[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const jsonPayload = Buffer.from(base64, 'base64').toString('utf8');
       
-      return res.status(401).json({ 
-        error: 'User authentication required', 
-        message: 'Please register your account first' 
-      });
+      const decoded = JSON.parse(jsonPayload);
+      const firebaseUid = decoded.user_id || decoded.sub;
+      
+      if (!firebaseUid) {
+        return res.status(401).json({ error: 'Invalid token format' });
+      }
+      
+      // Get user data by Firebase UID
+      const { getUserByFirebaseUid, getPilotSeniorityAuth } = require('./api-auth');
+      const user = await getUserByFirebaseUid(firebaseUid);
+      
+      if (!user) {
+        return res.status(404).json({ 
+          error: 'User not found', 
+          message: 'Please register your account first' 
+        });
+      }
       
       // Get seniority data using the user's employee ID
       const seniorityData = await getPilotSeniorityAuth(user.employeeId);
